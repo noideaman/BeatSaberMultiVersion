@@ -4,6 +4,7 @@ Simple bash script to parse the release page of [BeatSaberMultiplayer](https://g
 This script is run as a cron job every 10 minutes at my server
 - [json](https://beatsaber.weebvr.com/release.json)
 - [csv](https://beatsaber.weebvr.com/release.csv)
+
 It will display the latest version for each part of the plugins
 ServerHub (Linux/Windows)
 MultiplayerServer (Linux/Windows)
