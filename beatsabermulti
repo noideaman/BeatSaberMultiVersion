@@ -1,0 +1,34 @@
+#!/bin/bash
+
+function getinfo {
+	version=$(cat latest.html | grep ".zip" | grep releases | sed "s/^.*f\=\"\///" | sed "s/\"\ .*//" | grep $1 | head -n1 | sed "s/\/$1.*//" | sed "s/^.*download\///")
+	url=$(cat latest.html | grep ".zip" | grep releases | sed "s/^.*f\=\"\///" | sed "s/\"\ .*//" | grep $1 | head -n1)
+	echo $version https://github.com/$url
+}
+
+#cash the current releases page localy
+curl -s "https://github.com/andruzzzhka/BeatSaberMultiplayer/releases" > latest.html
+
+#array the names of the important zip files
+software=( BeatSaberMultiplayer-Oculus BeatSaberMultiplayer-Steam MultiplayerServer_linux-64 MultiplayerServer_linux-arm MultiplayerServer_win-64 ServerHub_linux-64 ServerHub_linux-arm ServerHub_win-64 )
+
+#ensure an clean started csv file
+echo "Edition,Version,Download" > release.csv
+
+#loop through the cached release html file using the software array list
+#update the csv file
+for f in  ${software[@]}
+do
+	edition=$f
+	version=$(getinfo $f | sed s/\ .*//)
+	getsoft=$(getinfo $f | sed s/^.*\ //)
+
+	echo "$edition,$version,$getsoft" >> release.csv
+	
+done
+
+#Was lazy used a csv2json bash script created by: dsliberty
+#https://gist.github.com/dsliberty/3de707bc656cf757a0cb
+#Updated by: outwitevil
+#https://gist.github.com/dsliberty/3de707bc656cf757a0cb#gistcomment-2365887
+bash csv2json.sh release.csv > release.json
